@@ -43,6 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Soenneker.Dtos.Coordinates" Version="4.0.2" />
+        <PackageReference Include="Soenneker.Dtos.Coordinates" Version="4.0.4" />
     </ItemGroup>
 </Project>
