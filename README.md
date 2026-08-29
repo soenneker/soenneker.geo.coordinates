@@ -2,37 +2,49 @@
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.geo.coordinates/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.geo.coordinates/actions/workflows/publish-package.yml)
 [![](https://img.shields.io/nuget/dt/soenneker.geo.coordinates.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.geo.coordinates/)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Geo.Coordinates
-### High-performance geographic coordinate utilities.
+# Soenneker.Geo.Coordinates
 
-## Installation
+High-performance geographic coordinate utilities.
 
-```
+## Install
+
+```bash
 dotnet add package Soenneker.Geo.Coordinates
 ```
 
-## Usage
+## Quick start
 
 ```csharp
-using Soenneker.Dtos.Coordinates;
 using Soenneker.Geo.Coordinates;
 
-var newYork = new Coordinate(40.7128, -74.0060);
-var losAngeles = new Coordinate(34.0522, -118.2437);
-
-double meters = CoordinateUtil.GetDistanceMeters(newYork, losAngeles);
-double bearing = CoordinateUtil.GetInitialBearingDegrees(newYork, losAngeles);
-Coordinate midpoint = CoordinateUtil.GetMidpoint(newYork, losAngeles);
-Coordinate? closest = CoordinateUtil.GetClosest(newYork, [losAngeles, midpoint]);
+var result = CoordinateUtil.IsValid(1, 1);
 ```
 
-Return the original object when candidates contain coordinates:
+Determines whether latitude and longitude are finite and within WGS84 bounds.
 
-```csharp
-public sealed record Store(string Name, Coordinate Coordinate);
+## What you get
 
-Store? closestStore = CoordinateUtil.GetClosest(
-    newYork,
-    stores,
-    static store => store.Coordinate);
-```
+- `CoordinateUtil` — High-performance geographic coordinate utilities.
+
+## API at a glance
+
+| API | What it does | Result / important behavior |
+| --- | --- | --- |
+| `CoordinateUtil.IsValid(latitude, longitude)` | Determines whether latitude and longitude are finite and within WGS84 bounds. | true if latitude and longitude are finite and within WGS84 bounds; otherwise, false. |
+| `CoordinateUtil.IsValid(coordinate)` | Determines whether the coordinate is finite and within WGS84 bounds. | true if the coordinate is finite and within WGS84 bounds; otherwise, false. |
+| `CoordinateUtil.ClampLatitude(latitude)` | Clamps latitude to [-90, 90]. | The resulting value. |
+| `CoordinateUtil.NormalizeLongitude(longitude)` | Normalizes longitude to [-180, 180]. | The resulting value. |
+| `CoordinateUtil.Normalize(coordinate)` | Clamps latitude and normalizes longitude. | The resulting coordinate. |
+| `CoordinateUtil.TryParse(value, coordinate)` | Attempts to parse an invariant "latitude, longitude" value. | true if the requested update was applied; otherwise, false. |
+| `CoordinateUtil.Parse(value)` | Parses an invariant "latitude, longitude" value. | The resulting coordinate. |
+| `CoordinateUtil.ToRadians(degrees)` | Converts degrees to radians. | The resulting value. |
+| `CoordinateUtil.ToDegrees(radians)` | Converts radians to degrees. | The resulting value. |
+| `CoordinateUtil.GetDistanceMeters(from, to)` | Calculates the great-circle distance in meters using the haversine formula. | The resulting value. |
+| `CoordinateUtil.GetDistanceKilometers(from, to)` | Calculates the great-circle distance in kilometers using the haversine formula. | The resulting value. |
+| `CoordinateUtil.GetDistanceMiles(from, to)` | Calculates the great-circle distance in miles using the haversine formula. | The resulting value. |
+| `CoordinateUtil.GetInitialBearingDegrees(from, to)` | Calculates the initial bearing from one coordinate to another in degrees, normalized to [0, 360). | The resulting value. |
+| `CoordinateUtil.GetDestination(origin, distanceMeters, bearingDegrees)` | Calculates the coordinate reached from the origin by travelling a distance at a bearing. | The resulting coordinate. |
+| `CoordinateUtil.GetMidpoint(first, second)` | Calculates the geographic midpoint between two coordinates. | The resulting coordinate. |
+| `CoordinateUtil.GetBoundingBox(center, radiusMeters)` | Calculates a bounding box around a center coordinate and radius. | The resulting (Coordinate Southwest, Coordinate Northeast). |
+| `CoordinateUtil.GetClosest(origin, candidates)` | Gets the closest coordinate to an origin from a sequence of candidates. | The requested coordinate. |
+| `CoordinateUtil.GetClosest(origin, candidates, coordinateSelector)` | Gets the item with the closest coordinate to an origin from a sequence of candidates. | The requested value. |
