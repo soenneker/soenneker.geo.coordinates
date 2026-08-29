@@ -19,6 +19,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Determines whether latitude and longitude are finite and within WGS84 bounds.
     /// </summary>
+    /// <param name="latitude">Latitude for the is valid operation.</param>
+    /// <param name="longitude">Longitude for the is valid operation.</param>
+    /// <returns>true if latitude and longitude are finite and within WGS84 bounds; otherwise, false.</returns>
     public static bool IsValid(double latitude, double longitude)
     {
         return double.IsFinite(latitude) && double.IsFinite(longitude) && latitude is >= -90D and <= 90D &&
@@ -28,6 +31,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Determines whether the coordinate is finite and within WGS84 bounds.
     /// </summary>
+    /// <param name="coordinate">Coordinate for the is valid operation.</param>
+    /// <returns>true if the coordinate is finite and within WGS84 bounds; otherwise, false.</returns>
     public static bool IsValid(Coordinate coordinate)
     {
         return IsValid(coordinate.Latitude, coordinate.Longitude);
@@ -36,6 +41,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Clamps latitude to [-90, 90].
     /// </summary>
+    /// <param name="latitude">Latitude for the clamp latitude operation.</param>
+    /// <returns>The resulting value.</returns>
     public static double ClampLatitude(double latitude)
     {
         if (!double.IsFinite(latitude))
@@ -47,6 +54,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Normalizes longitude to [-180, 180].
     /// </summary>
+    /// <param name="longitude">Longitude for the normalize longitude operation.</param>
+    /// <returns>The resulting value.</returns>
     public static double NormalizeLongitude(double longitude)
     {
         if (!double.IsFinite(longitude))
@@ -60,6 +69,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Clamps latitude and normalizes longitude.
     /// </summary>
+    /// <param name="coordinate">Coordinate for the normalize operation.</param>
+    /// <returns>The resulting coordinate.</returns>
     public static Coordinate Normalize(Coordinate coordinate)
     {
         return new Coordinate(ClampLatitude(coordinate.Latitude), NormalizeLongitude(coordinate.Longitude));
@@ -68,6 +79,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Attempts to parse an invariant "latitude, longitude" value.
     /// </summary>
+    /// <param name="value">Text to parse.</param>
+    /// <param name="coordinate">Coordinate for the try parse operation.</param>
+    /// <returns>true if the requested update was applied; otherwise, false.</returns>
     public static bool TryParse(string? value, out Coordinate coordinate)
     {
         coordinate = default;
@@ -98,6 +112,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Parses an invariant "latitude, longitude" value.
     /// </summary>
+    /// <param name="value">Text to parse.</param>
+    /// <returns>The resulting coordinate.</returns>
     public static Coordinate Parse(string value)
     {
         if (TryParse(value, out Coordinate coordinate))
@@ -109,6 +125,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Converts degrees to radians.
     /// </summary>
+    /// <param name="degrees">Degrees for the to radians operation.</param>
+    /// <returns>The resulting value.</returns>
     public static double ToRadians(double degrees)
     {
         return degrees * _degreesToRadians;
@@ -117,6 +135,8 @@ public static class CoordinateUtil
     /// <summary>
     /// Converts radians to degrees.
     /// </summary>
+    /// <param name="radians">Radians for the to degrees operation.</param>
+    /// <returns>The resulting value.</returns>
     public static double ToDegrees(double radians)
     {
         return radians * _radiansToDegrees;
@@ -125,6 +145,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in meters using the haversine formula.
     /// </summary>
+    /// <param name="from">Sender address.</param>
+    /// <param name="to">Recipient address.</param>
+    /// <returns>The resulting value.</returns>
     public static double GetDistanceMeters(Coordinate from, Coordinate to)
     {
         ThrowIfInvalid(from, nameof(from));
@@ -140,6 +163,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in kilometers using the haversine formula.
     /// </summary>
+    /// <param name="from">Sender address.</param>
+    /// <param name="to">Recipient address.</param>
+    /// <returns>The resulting value.</returns>
     public static double GetDistanceKilometers(Coordinate from, Coordinate to)
     {
         return GetDistanceMeters(from, to) / 1_000D;
@@ -148,6 +174,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in miles using the haversine formula.
     /// </summary>
+    /// <param name="from">Sender address.</param>
+    /// <param name="to">Recipient address.</param>
+    /// <returns>The resulting value.</returns>
     public static double GetDistanceMiles(Coordinate from, Coordinate to)
     {
         return GetDistanceMeters(from, to) / _metersPerMile;
@@ -156,6 +185,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the initial bearing from one coordinate to another in degrees, normalized to [0, 360).
     /// </summary>
+    /// <param name="from">Sender address.</param>
+    /// <param name="to">Recipient address.</param>
+    /// <returns>The resulting value.</returns>
     public static double GetInitialBearingDegrees(Coordinate from, Coordinate to)
     {
         ThrowIfInvalid(from, nameof(from));
@@ -175,6 +207,10 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the coordinate reached from the origin by travelling a distance at a bearing.
     /// </summary>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="distanceMeters">Distance Meters for the get destination operation.</param>
+    /// <param name="bearingDegrees">Bearing Degrees for the get destination operation.</param>
+    /// <returns>The resulting coordinate.</returns>
     public static Coordinate GetDestination(Coordinate origin, double distanceMeters, double bearingDegrees)
     {
         ThrowIfInvalid(origin, nameof(origin));
@@ -203,6 +239,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the geographic midpoint between two coordinates.
     /// </summary>
+    /// <param name="first">First URI to compare.</param>
+    /// <param name="second">Second URI to compare.</param>
+    /// <returns>The resulting coordinate.</returns>
     public static Coordinate GetMidpoint(Coordinate first, Coordinate second)
     {
         ThrowIfInvalid(first, nameof(first));
@@ -226,6 +265,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates a bounding box around a center coordinate and radius.
     /// </summary>
+    /// <param name="center">Center for the get bounding box operation.</param>
+    /// <param name="radiusMeters">Radius Meters for the get bounding box operation.</param>
+    /// <returns>The resulting (Coordinate Southwest, Coordinate Northeast).</returns>
     public static (Coordinate Southwest, Coordinate Northeast) GetBoundingBox(Coordinate center, double radiusMeters)
     {
         ThrowIfInvalid(center, nameof(center));
@@ -259,6 +301,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the closest coordinate to an origin from a sequence of candidates.
     /// </summary>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <returns>The requested coordinate.</returns>
     public static Coordinate? GetClosest(Coordinate origin, IEnumerable<Coordinate> candidates)
     {
         return GetByHaversineValue(origin, candidates, findClosest: true);
@@ -267,6 +312,11 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the item with the closest coordinate to an origin from a sequence of candidates.
     /// </summary>
+    /// <typeparam name="T">Type of value handled by the coordinate.</typeparam>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <param name="coordinateSelector">Callback used by get closest.</param>
+    /// <returns>The requested value.</returns>
     public static T? GetClosest<T>(Coordinate origin, IEnumerable<T> candidates, Func<T, Coordinate> coordinateSelector)
     {
         return GetByHaversineValue(origin, candidates, coordinateSelector, findClosest: true);
@@ -275,6 +325,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the closest coordinate to an origin from a span of candidates.
     /// </summary>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <returns>The requested coordinate.</returns>
     public static Coordinate? GetClosest(Coordinate origin, ReadOnlySpan<Coordinate> candidates)
     {
         return GetByHaversineValue(origin, candidates, findClosest: true);
@@ -283,6 +336,11 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the item with the closest coordinate to an origin from a span of candidates.
     /// </summary>
+    /// <typeparam name="T">Type of value handled by the coordinate.</typeparam>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <param name="coordinateSelector">Callback used by get closest.</param>
+    /// <returns>The requested value.</returns>
     public static T? GetClosest<T>(Coordinate origin, ReadOnlySpan<T> candidates, Func<T, Coordinate> coordinateSelector)
     {
         return GetByHaversineValue(origin, candidates, coordinateSelector, findClosest: true);
@@ -291,6 +349,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the furthest coordinate from an origin from a sequence of candidates.
     /// </summary>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <returns>The requested coordinate.</returns>
     public static Coordinate? GetFurthest(Coordinate origin, IEnumerable<Coordinate> candidates)
     {
         return GetByHaversineValue(origin, candidates, findClosest: false);
@@ -299,6 +360,11 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the item with the furthest coordinate from an origin from a sequence of candidates.
     /// </summary>
+    /// <typeparam name="T">Type of value handled by the coordinate.</typeparam>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <param name="coordinateSelector">Callback used by get furthest.</param>
+    /// <returns>The requested value.</returns>
     public static T? GetFurthest<T>(Coordinate origin, IEnumerable<T> candidates, Func<T, Coordinate> coordinateSelector)
     {
         return GetByHaversineValue(origin, candidates, coordinateSelector, findClosest: false);
@@ -307,6 +373,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the furthest coordinate from an origin from a span of candidates.
     /// </summary>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <returns>The requested coordinate.</returns>
     public static Coordinate? GetFurthest(Coordinate origin, ReadOnlySpan<Coordinate> candidates)
     {
         return GetByHaversineValue(origin, candidates, findClosest: false);
@@ -315,6 +384,11 @@ public static class CoordinateUtil
     /// <summary>
     /// Gets the item with the furthest coordinate from an origin from a span of candidates.
     /// </summary>
+    /// <typeparam name="T">Type of value handled by the coordinate.</typeparam>
+    /// <param name="origin">Origin used for URL or access checks.</param>
+    /// <param name="candidates">Candidate values to evaluate.</param>
+    /// <param name="coordinateSelector">Callback used by get furthest.</param>
+    /// <returns>The requested value.</returns>
     public static T? GetFurthest<T>(Coordinate origin, ReadOnlySpan<T> candidates, Func<T, Coordinate> coordinateSelector)
     {
         return GetByHaversineValue(origin, candidates, coordinateSelector, findClosest: false);
