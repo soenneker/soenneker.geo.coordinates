@@ -145,9 +145,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in meters using the haversine formula.
     /// </summary>
-    /// <param name="from">Sender address.</param>
-    /// <param name="to">Recipient address.</param>
-    /// <returns>The resulting value.</returns>
+    /// <param name="from">Starting coordinate.</param>
+    /// <param name="to">Ending coordinate.</param>
+    /// <returns>The spherical distance in meters.</returns>
     public static double GetDistanceMeters(Coordinate from, Coordinate to)
     {
         ThrowIfInvalid(from, nameof(from));
@@ -163,9 +163,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in kilometers using the haversine formula.
     /// </summary>
-    /// <param name="from">Sender address.</param>
-    /// <param name="to">Recipient address.</param>
-    /// <returns>The resulting value.</returns>
+    /// <param name="from">Starting coordinate.</param>
+    /// <param name="to">Ending coordinate.</param>
+    /// <returns>The spherical distance in kilometers.</returns>
     public static double GetDistanceKilometers(Coordinate from, Coordinate to)
     {
         return GetDistanceMeters(from, to) / 1_000D;
@@ -174,9 +174,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the great-circle distance in miles using the haversine formula.
     /// </summary>
-    /// <param name="from">Sender address.</param>
-    /// <param name="to">Recipient address.</param>
-    /// <returns>The resulting value.</returns>
+    /// <param name="from">Starting coordinate.</param>
+    /// <param name="to">Ending coordinate.</param>
+    /// <returns>The spherical distance in statute miles.</returns>
     public static double GetDistanceMiles(Coordinate from, Coordinate to)
     {
         return GetDistanceMeters(from, to) / _metersPerMile;
@@ -185,9 +185,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the initial bearing from one coordinate to another in degrees, normalized to [0, 360).
     /// </summary>
-    /// <param name="from">Sender address.</param>
-    /// <param name="to">Recipient address.</param>
-    /// <returns>The resulting value.</returns>
+    /// <param name="from">Starting coordinate.</param>
+    /// <param name="to">Ending coordinate.</param>
+    /// <returns>The initial bearing in the range [0, 360).</returns>
     public static double GetInitialBearingDegrees(Coordinate from, Coordinate to)
     {
         ThrowIfInvalid(from, nameof(from));
@@ -207,10 +207,10 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the coordinate reached from the origin by travelling a distance at a bearing.
     /// </summary>
-    /// <param name="origin">Origin used for URL or access checks.</param>
-    /// <param name="distanceMeters">Distance Meters for the get destination operation.</param>
-    /// <param name="bearingDegrees">Bearing Degrees for the get destination operation.</param>
-    /// <returns>The resulting coordinate.</returns>
+    /// <param name="origin">Starting coordinate.</param>
+    /// <param name="distanceMeters">Non-negative travel distance in meters.</param>
+    /// <param name="bearingDegrees">Finite initial bearing in degrees.</param>
+    /// <returns>The destination on the spherical Earth model.</returns>
     public static Coordinate GetDestination(Coordinate origin, double distanceMeters, double bearingDegrees)
     {
         ThrowIfInvalid(origin, nameof(origin));
@@ -239,9 +239,9 @@ public static class CoordinateUtil
     /// <summary>
     /// Calculates the geographic midpoint between two coordinates.
     /// </summary>
-    /// <param name="first">First URI to compare.</param>
-    /// <param name="second">Second URI to compare.</param>
-    /// <returns>The resulting coordinate.</returns>
+    /// <param name="first">First coordinate.</param>
+    /// <param name="second">Second coordinate.</param>
+    /// <returns>The spherical midpoint.</returns>
     public static Coordinate GetMidpoint(Coordinate first, Coordinate second)
     {
         ThrowIfInvalid(first, nameof(first));
